@@ -1,45 +1,51 @@
+
 import pygame
 import random
 import math
 
 background_colour = (255,255,255)
-(width, height) = (300, 200)
+(width, height) = (900, 700)
+PlayerMovementX = 10
+PlayerMovementY = 10
 
-class Particle():
-    def __init__(self, (x, y), size):
-        self.x = x
-        self.y = y
+PlayedWidthX = 50
+PlayedWidthY = 50
+
+Velocity = 1
+
+screen = pygame.display.set_mode((width, height))
+pygame.display.set_caption('testicles')
+screen.fill(background_colour)
+
+pygame.time.delay(1)
+
+class Particle:
+    def __init__(self, position, size):
+        self.x, self.y = position
         self.size = size
-        self.colour = (0, 0, 255)
-        self.thickness = 1
+        self.colour = (255, 0, 0)
         self.speed = 0
         self.angle = 0
 
     def display(self):
-        pygame.draw.circle(screen, self.colour, (int(self.x), int(self.y)), self.size, self.thickness)
+        pygame.draw.circle(screen, self.colour, (self.x, self.y), self.size)
 
     def move(self):
         self.x += math.sin(self.angle) * self.speed
         self.y -= math.cos(self.angle) * self.speed
 
-screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption('Tutorial 4')
+size = random.randint(25, 40)
+x = random.randint(size, width - size)
+y = random.randint(size, height - size) 
 
-number_of_particles = 10
-my_particles = []
+joe_mama = Particle((x, y), size)
 
-for n in range(number_of_particles):
-    size = random.randint(10, 20)
-    x = random.randint(size, width-size)
-    y = random.randint(size, height-size)
+joe_mama.speed = random.random()
+joe_mama.angle = random.uniform(0, math.pi*2)
 
-    particle = Particle((x, y), size)
-    particle.speed = random.random()
-    particle.angle = random.uniform(0, math.pi*2)
-
-    my_particles.append(particle)
 
 running = True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -47,7 +53,23 @@ while running:
 
     screen.fill(background_colour)
 
-    for particle in my_particles:
-        particle.move()
-        particle.display()
+    Movement = pygame.key.get_pressed()
+
+    if Movement[pygame.K_LEFT]:
+        PlayerMovementX -= Velocity
+
+    if Movement[pygame.K_RIGHT]:
+        PlayerMovementX += Velocity
+
+    if Movement[pygame.K_UP]:
+        PlayerMovementY -= Velocity
+
+    if Movement[pygame.K_DOWN]:
+        PlayerMovementY += Velocity
+
+    joe_mama.move()
+    joe_mama.display()
+
+    pygame.draw.rect(screen , (255,0,0),(PlayerMovementX, PlayerMovementY, PlayedWidthX, PlayedWidthY))
     pygame.display.flip()
+    pygame.display.update()
